@@ -22,7 +22,7 @@ int main()
   for (auto line : lines)
   {
     std::cout << "line: " << line << std::endl;
-    std::cout << "line number " << gp.parseLineNumber(line.substr(0,2), 0) << std::endl;
+    std::cout << "line number " << gp.parseLineNumber(line.substr(0,2)) << std::endl;
   }
   return 0;
 }
