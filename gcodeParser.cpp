@@ -41,3 +41,18 @@ void GCodeParser::splitLines(const std::string& code, std::vector<std::string>& 
     buffer.pop_back();
   }
 }
+
+void GCodeParser::parse(const std::string& gcode)
+{
+  splitLines(gcode, lines);
+
+}
+
+void GCodeParser::printLines()
+{
+  for (auto line : lines)
+  {
+    std::cout << "line: " << line << std::endl;
+    std::cout << "line number " << parseLineNumber(line.substr(0,2)) << std::endl;
+  }
+}

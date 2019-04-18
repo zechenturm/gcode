@@ -17,12 +17,8 @@ GCodeParser gp;
 
 int main()
 {
-  std::vector<std::string> lines;
-  gp.splitLines(sampleCode, lines);
-  for (auto line : lines)
-  {
-    std::cout << "line: " << line << std::endl;
-    std::cout << "line number " << gp.parseLineNumber(line.substr(0,2)) << std::endl;
-  }
+  gp.parse(sampleCode);
+  gp.printLines();
+  
   return 0;
 }
