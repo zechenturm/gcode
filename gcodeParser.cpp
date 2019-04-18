@@ -34,9 +34,10 @@ void GCodeParser::splitLines(const std::string& code)
     str_end = code.find(delim, str_start);
     std::cout << str_start << ":" << str_end << std::endl;
     line_t line;
-    line.command = code.substr(str_start, str_end-str_start);
-    std::cout << code.substr(str_start, str_end-str_start) << std::endl;
-    line.number = parseLineNumber(line.command.substr(0, line.command.find_first_of(' ')));
+    // command starts here, ie after line number: if line number is explicitly given, find first space, otherwise start at 0
+    const int cmd_start = code[str_start] == 'N' ? code.find_first_of(' ', str_start)+1 : str_start;
+    line.command = code.substr(cmd_start, str_end-cmd_start);
+    line.number = parseLineNumber(code.substr(str_start,cmd_start-str_start-1));
     line.parameters = ""; //TODO split line correctly
     lines.push_back(line);
     str_start = str_end+1;
