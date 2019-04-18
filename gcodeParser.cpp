@@ -25,7 +25,7 @@ int GCodeParser::parseLineNumber(const std::string& text)
   }
 }
 
-void GCodeParser::splitLines(const std::string& code, std::vector<std::string>& buffer)
+void GCodeParser::splitLines(const std::string& code)
 {
   constexpr char delim = '#';
   int str_end = 0, str_start = 0;
@@ -33,18 +33,23 @@ void GCodeParser::splitLines(const std::string& code, std::vector<std::string>& 
   {
     str_end = code.find(delim, str_start);
     std::cout << str_start << ":" << str_end << std::endl;
-    buffer.push_back(code.substr(str_start, str_end-str_start));
+    line_t line;
+    line.command = code.substr(str_start, str_end-str_start);
+    std::cout << code.substr(str_start, str_end-str_start) << std::endl;
+    line.number = parseLineNumber(line.command.substr(0, line.command.find_first_of(' ')));
+    line.parameters = ""; //TODO split line correctly
+    lines.push_back(line);
     str_start = str_end+1;
   }
-  if (buffer.back() == "")
+  if (lines.back().command == "")
   {
-    buffer.pop_back();
+    lines.pop_back();
   }
 }
 
 void GCodeParser::parse(const std::string& gcode)
 {
-  splitLines(gcode, lines);
+  splitLines(gcode);
 
 }
 
@@ -53,6 +58,11 @@ void GCodeParser::printLines()
   for (auto line : lines)
   {
     std::cout << "line: " << line << std::endl;
-    std::cout << "line number " << parseLineNumber(line.substr(0,2)) << std::endl;
   }
+}
+
+std::ostream& operator << (std::ostream& os, const GCodeParser::line_t& line)
+{
+  os << line.number << ": " << line.command << " " << line.parameters;
+  return os;
 }

@@ -10,9 +10,18 @@ class GCodeParser
     void printLines();
 
   private:
-    unsigned int lineNumber;
-    std::vector<std::string> lines;    
 
-    void splitLines(const std::string& code, std::vector<std::string>& buffer);
+  struct line_t
+  {
+    unsigned int number;
+    std::string command;
+    std::string parameters;
+  };
+    unsigned int lineNumber;
+    std::vector<line_t> lines;    
+
+    void splitLines(const std::string& code);
     int parseLineNumber(const std::string& text);
+
+    friend std::ostream& operator << (std::ostream& os, const line_t& line);
 };

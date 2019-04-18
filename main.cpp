@@ -6,13 +6,6 @@
 
 const std::string sampleCode = "N1 G00#N2 G10#N3 G12#N4 G20#";
 
-struct line_t
-{
-  unsigned int number;
-  std::string command;
-  std::string parameters;
-};
-
 GCodeParser gp;
 
 int main()
