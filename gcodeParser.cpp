@@ -1,6 +1,7 @@
 #include "gcodeParser.hpp"
 
 #include <iostream>
+#include <algorithm>
 
 int GCodeParser::parseLineNumber(const std::string& text)
 {
@@ -36,9 +37,11 @@ void GCodeParser::splitLines(const std::string& code)
     line_t line;
     // command starts here, ie after line number: if line number is explicitly given, find first space, otherwise start at 0
     const int cmd_start = code[str_start] == 'N' ? code.find_first_of(' ', str_start)+1 : str_start;
-    line.command = code.substr(cmd_start, str_end-cmd_start);
+    const int param_start = std::min(code.find_first_of(' ', cmd_start), code.find_first_of(delim, cmd_start)) ;
+    line.command = code.substr(cmd_start, param_start-cmd_start);
     line.number = parseLineNumber(code.substr(str_start,cmd_start-str_start-1));
-    line.parameters = ""; //TODO split line correctly
+    std::cout << param_start << std::endl;
+    line.parameters = (param_start > 0 && param_start < str_end) ? code.substr(param_start+1, str_end-param_start-1) : "";
     lines.push_back(line);
     str_start = str_end+1;
   }
@@ -64,6 +67,6 @@ void GCodeParser::printLines()
 
 std::ostream& operator << (std::ostream& os, const GCodeParser::line_t& line)
 {
-  os << line.number << ": " << line.command << " " << line.parameters;
+  os << line.number << ": " << line.command << "<" << line.parameters << ">";
   return os;
 }
